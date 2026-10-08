@@ -55,6 +55,14 @@ export const ForbiddenException = ({message = "Forbidden" , issues})=>{
         }
     })
 }
+export const TooManyRequestException = ({message = "TooManyRequest" , issues})=>{
+    return ApplicationException({
+        message,
+        options : {
+            cause:{status: 429 , issues}
+        }
+    })
+}
 
 
 

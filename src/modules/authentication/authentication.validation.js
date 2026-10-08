@@ -26,3 +26,31 @@ export const signup = (lang)=>{
     })
 })
 }
+
+export const confirmEmail = (lang)=>{
+    return z.object({
+    body:z.strictObject({
+        email : generaValidationFields.email(lang),
+        otp : generaValidationFields.otp(lang)
+    })
+})
+}
+export const resentconfirmEmail = (lang)=>{
+    return z.object({
+    body:z.strictObject({
+        email : generaValidationFields.email(lang),
+    })
+})
+}
+export const resetPassword = (lang)=>{
+    return z.object({
+    body:z.strictObject({
+        email : generaValidationFields.email(lang),
+        otp : generaValidationFields.otp(lang),
+        password : generaValidationFields.password(lang),
+        confirmPassword : generaValidationFields.confirmPassword(lang),
+    }).superRefine((data , ctx)=>{
+        generaValidationFields.matchFields({origin:"password" , copy:"confirmPassword",data , ctx , lang})
+    })
+})
+}

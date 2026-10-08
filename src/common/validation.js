@@ -18,6 +18,7 @@ const matchFields = ({origin , copy , data , ctx , lang})=>{
 
 export const generaValidationFields = {
     email:(lang) => z.email({ error: getValidationlangMessage(lang, 102) }),
+    otp:(lang) => z.string().regex(/^\d{6}$/ , {error :getValidationlangMessage(lang, 109) }),
     
     password:(lang) => z.string()
         .min(8, { error: getValidationlangMessage(lang, 103) })

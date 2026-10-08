@@ -35,5 +35,9 @@ export const ValidationLangMessages = {
         ar: "النوع غير صحيح، من فضلك أدخل قيمة صحيحة",
         en: "Invalid gender. Please enter a valid value"
     },
+    109: {
+        ar: " الكود غير صالح",
+        en: "Invalid Code"
+    },
 };
 

@@ -5,6 +5,11 @@ config({ path: resolve(`.env.${NODE_ENV}`) })
 
 export const PORT = parseInt(process.env.PORT ?? "9000")
 
+export const APP_NAME = process.env.APP_NAME
+
+export const APP_EMAIL = process.env.APP_EMAIL
+export const APP_PASSWORD = process.env.APP_PASSWORD
+
 export const DB_URI = process.env.DB_URI
 export const REDIS_URI = process.env.REDIS_URI
 

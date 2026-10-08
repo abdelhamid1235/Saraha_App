@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, signup, signupWithGmail } from "./authentication.service.js";
+import { confirmEmail, login, requestForgetPassword, resentConfirmEmail, resetPassword, signup, signupWithGmail, verifyForgetPassword } from "./authentication.service.js";
 import { successResponse } from "../../common/utils/index.js";
 import * as validators from './authentication.validation.js'
 import { validation } from "../../middleware/index.js";
@@ -15,6 +15,26 @@ router.post("/signup",validation(validators.signup), async (req, res, next) => {
     return successResponse({ res, status: 201, data })
 })
 
+router.patch("/confirm-email",validation(validators.confirmEmail), async (req, res, next) => {
+    const data = await confirmEmail(req.validate.body)
+    return successResponse({ res, status: 200, data})
+})
+router.patch("/resent-confirm-email",validation(validators.resentconfirmEmail), async (req, res, next) => {
+    const data = await resentConfirmEmail(req.validate.body)
+    return successResponse({ res, status: 200 , data})
+})
+router.post("/request-forget-password-code",validation(validators.resentconfirmEmail), async (req, res, next) => {
+    const data = await requestForgetPassword(req.validate.body)
+    return successResponse({ res, status: 201 , data})
+})
+router.post("/verify-forget-password",validation(validators.confirmEmail), async (req, res, next) => {
+    const data = await verifyForgetPassword(req.validate.body)
+    return successResponse({ res, status: 200 , data})
+})
+router.patch("/reset-password",validation(validators.resetPassword), async (req, res, next) => {
+    const data = await resetPassword(req.validate.body)
+    return successResponse({ res, status: 200 , data})
+})
 router.post("/login",validation(validators.login), async (req, res, next) => {
     const data = await login(req.validate.body)
     return successResponse({ res, data })

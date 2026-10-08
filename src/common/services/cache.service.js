@@ -49,6 +49,6 @@ export const persist = async({ key })=>{
 export const incr = async ({ key })=>{
     return await client.incr(key)
 }
-export const incrBy = async ({ key, amount }) => {
-    return await client.incrBy(key, amount); 
+export const incrBy = async ({ key, value }) => {
+    return await client.incrBy(key, value); 
 }
