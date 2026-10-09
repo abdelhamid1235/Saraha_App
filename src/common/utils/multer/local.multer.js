@@ -1,6 +1,6 @@
 import multer from "multer";
 import {randomUUID} from "node:crypto"
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, unlink, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import {fileTypeFromBuffer} from "file-type"
 import { BadReaquestException } from "../../exceptions/index.js";
@@ -37,19 +37,27 @@ export const processFile = async ({customPath = "general" , file , validation = 
 }
 export const processFiles = async ({customPath, files= [] , validation = []} = {})=>{
     const upload = []
+    try {
         for(const file of files){
             const fileUpload = await processFile({customPath,file , validation})
             upload.push(fileUpload)
         }
         return upload;
+    } catch (error) {
+        await Promise.all(
+            upload.map(file =>
+                unlink(resolve(`./${file.finalPath}`))
+            )
+        );
+    }
 }
 export const processFields = async ({customPath,fields = {}  , validation = []} = {})=>{
     const upload = []
-        for(const field of Object.keys(fields)){
-            const fileUpload = await processFiles({customPath,files : fields[field] , validation})
-            upload.push({field , fileUpload})
-        }
-        return upload;
+    for(const field of Object.keys(fields)){
+        const fileUpload = await processFiles({customPath,files : fields[field] , validation})
+        upload.push({field , fileUpload})
+    }
+    return upload;
 }
 
 export const processMulterUpload = async ({req , customPath = "general", validation = []})=>{
@@ -58,6 +66,6 @@ export const processMulterUpload = async ({req , customPath = "general", validat
         }else if(Array.isArray(req.files)){
             await processFiles({customPath,files:req.files , validation})
         }else if(typeof req.files == "object" && Object.keys(req.files)?.length){
-            await processFields({customPath,Fields :res.files , validation})
+            await processFields({customPath,Fields :req.files , validation})
         }
 }
