@@ -9,6 +9,7 @@ const app = express()
 await bootstrap(app , PORT);
 
 app.use(cors() , express.json())
+app.use("/upload" , express.static("./upload"))
 
 app.all("/", (req, res) => res.status(200).send({ message: "Welcome to BE API 🌸" }))
 

@@ -1,9 +1,16 @@
 import { Router } from "express";
-import { successResponse } from "../../common/utils/index.js";
+import { fileValidation, localFileUpload, processFile, successResponse } from "../../common/utils/index.js";
 import { logout, profile, rotate_token, update } from "./user.service.js";
 import { authentication, authorization } from "../../middleware/index.js";
 import { RoleEnum, TokenTypeEnum } from "../../common/enum/index.js";
 const router = Router()
+
+router.patch("/profile-image",
+    localFileUpload({maxSize : 3 , validation:fileValidation.image}).single("attachment"),
+    processFile({validation:fileValidation.image}),
+    async(req, res, next) => {
+    return successResponse({ res, data: {file : req.file ?? req.files} })
+})
 
 router.get("/",authentication() ,async(req, res, next) => {
     const account = await profile(req.user);
