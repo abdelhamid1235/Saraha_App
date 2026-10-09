@@ -1,15 +1,21 @@
 import { Router } from "express";
-import { fileValidation, localFileUpload, processFile, successResponse } from "../../common/utils/index.js";
+import { fileValidation, localFileUpload,successResponse } from "../../common/utils/index.js";
 import { logout, profile, rotate_token, update } from "./user.service.js";
-import { authentication, authorization } from "../../middleware/index.js";
+import { authentication, authorization, uploadMiddleware } from "../../middleware/index.js";
 import { RoleEnum, TokenTypeEnum } from "../../common/enum/index.js";
 const router = Router()
 
 router.patch("/profile-image",
-    localFileUpload({maxSize : 3 , validation:fileValidation.image}).single("attachment"),
-    processFile({validation:fileValidation.image}),
+    authentication(),
+    uploadMiddleware({
+        multerMiddleware : localFileUpload({maxSize : 3}).single("attachment"),
+        customPath : "User" , 
+        validation : fileValidation.image
+    }),
     async(req, res, next) => {
-    return successResponse({ res, data: {file : req.file ?? req.files} })
+        req.user.image = req.file.finalPath;
+        await req.user.save()
+    return successResponse({ res, data:{user : req.user}})
 })
 
 router.get("/",authentication() ,async(req, res, next) => {
