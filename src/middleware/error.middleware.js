@@ -3,6 +3,6 @@ export const globalErrorHandling = (error, req, res, next) => {
         error_message :error.message || 'server error' ,
         issues:error.cause?.issues,
         error,
-        stack:error.stack
+        stack:NODE_ENV == "production"? undefined :error.stack
     })
 }

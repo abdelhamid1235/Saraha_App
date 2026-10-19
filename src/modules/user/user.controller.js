@@ -3,7 +3,7 @@ import { fileValidation, localFileUpload,successResponse } from "../../common/ut
 import { logout, profile, rotate_token, update } from "./user.service.js";
 import { authentication, authorization, uploadMiddleware } from "../../middleware/index.js";
 import { RoleEnum, TokenTypeEnum } from "../../common/enum/index.js";
-const router = Router()
+const router = Router({caseSensitive:true , strict:true});
 
 router.patch("/profile-image",
     authentication(),

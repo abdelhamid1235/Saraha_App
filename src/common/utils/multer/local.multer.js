@@ -31,7 +31,7 @@ export const processFile = async ({customPath = "general" , file , validation = 
             await mkdir(resolve(`./upload/${customPath}`) , {recursive : true});
             const uniquePath = `upload/${customPath}/${randomUUID()}.${result.ext}`
             await writeFile(resolve(`./${uniquePath}`), file.buffer)
-            file.finalPath = uniquePath;
+            file.path = uniquePath;
             return file;
         }
 }

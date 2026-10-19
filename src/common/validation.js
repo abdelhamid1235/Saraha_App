@@ -1,6 +1,7 @@
 import {z} from "zod";
 import { GenderEnum, LanguageEnum } from "./enum/index.js";
 import { ValidationLangMessages } from "./exceptions/index.js";
+import mongoose from "mongoose";
 
 const getValidationlangMessage = (lang , code)=>{
     return lang === LanguageEnum.AR ? ValidationLangMessages[code].ar : ValidationLangMessages[code].en;
@@ -37,6 +38,15 @@ export const generaValidationFields = {
     phone: (lang) => z.string().regex( /^(\+2)?01[0-25]\d{8}$/,{ error: getValidationlangMessage(lang, 105) } ), 
 
     gender: (lang) => z.enum(GenderEnum, { error: getValidationlangMessage(lang, 106) }), 
-
+    id : (lang)=> z.string().refine((data)=>{return mongoose.Types.ObjectId.isValid(data)} , {error: "InValid Formate"}),
+    file : (lang)=> z.strictObject({
+                    fieldname: z.string(),
+                    originalname: z.string(),
+                    encoding: z.string(),
+                    mimetype: z.string(),
+                    buffer: z.instanceof(Buffer),
+                    size: z.number(),
+                    path: z.string(),
+                }),
     matchFields
 }

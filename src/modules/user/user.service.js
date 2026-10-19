@@ -19,9 +19,9 @@ export const update = async (user , data)=>{
 }
 export const rotate_token = async (payload , user)=>{
     const accessTokenExpairIn = (payload.iat + ACCESS_TOKEN_EXPIRES_IN) * 1000;
-    const currentTime = Date.now() + (30 * 60 * 1000);
+    const currentTime = Date.now() + (2 * 60 * 1000);
     if(currentTime < accessTokenExpairIn){
-        throw ConflictException({message : "Sorry we cannot create new login credantial while current access token still witg range time"})
+        throw ConflictException({message : "Sorry we cannot create new login credantial while current access token still Valid"})
     }
     const data =  await createLoginCradential({user})
     await revokeToken({payload});

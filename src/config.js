@@ -25,3 +25,5 @@ export const REFRESH_ADMIN_TOKEN_SIGNATURE = process.env.REFRESH_ADMIN_TOKEN_SIG
 export const REFRESH_TOKEN_EXPIRES_IN= parseInt(process.env.REFRESH_TOKEN_EXPIRES_IN|| "31536000")
 
 export const WEB_CLIENT_ID = process.env.WEB_CLIENT_ID.split(",")
+
+export const ORIGINS = process.env.ORIGINS.split(",")

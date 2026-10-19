@@ -162,20 +162,6 @@ export const resetPassword = async({email , otp , password}) => {
     return ;
 }
 
-
-const userLoginTrialsKey = ({email}) => {
-    return `User::${email}::Login::Trials`
-}
-const userLoginTrials = async ({email, maxLoginTrials = 5 , blockInSecond = 300})=>{
-    const oldLoginTrials = await get({key: userLoginTrialsKey({email})}) ?? 0;
-    if(oldLoginTrials >= maxLoginTrials){
-        throw TooManyRequestException({message: "Max Login Trials has been reached"})
-    }
-    const currentLogin = await incrBy({key:userLoginTrialsKey({email}) , value : 1 });
-    if(currentLogin == maxLoginTrials){
-        await expire({key:userLoginTrialsKey({email}) , ttl:blockInSecond})
-    }
-}
 export const login = async({email , password}) => {
     const account = await findOne({
         filter: {email , provider : ProviderEnum.SYSTEM ,confirmEmail:{$exists : true}},
@@ -186,9 +172,7 @@ export const login = async({email , password}) => {
     }
     const match = await compare(password  , account.password);
     if(!match){
-        await userLoginTrials({email});
         throw NotFoundException({message:"Invalid Email Or Password"});
     }
-    await del({key : userLoginTrialsKey({email})})
     return await createLoginCradential({user:account})
 }

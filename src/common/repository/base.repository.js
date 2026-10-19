@@ -49,45 +49,42 @@ export const find = async ({
     if (options?.skip) {
         doc.skip(options.skip);
     }
-
     if (options?.limit) {
         doc.limit(options.limit);
     }
-
+    if (options?.sort) {
+        doc.sort(options.sort);
+    }
     if (options?.lean) {
         doc.lean(options.lean);
     }
     return await doc.exec();
 }
+export const countDoc = async({model , filter = {}})=>{
+    return await model.countDocuments(filter)
+}
 export const paginate = async ({
+    model , 
     filter = {},
     options = {},
-    select,
-    page = "all",
-    size = 5,
-    model
-
-} = {}) => {
-    let docsCount = undefined;
-    let pages = undefined;
-    if (page !== "all") {
-        page = Math.floor(page < 1 ? 1 : page);
-        options.limit = Math.floor(size < 1 || !size ? 5 : size);
-        options.skip = (page - 1) * options.limit;
-
-        docsCount = await model.countDocuments(filter);
-        pages = Math.ceil(docsCount / options.limit);
-    }
-    const result = await find({ model, filter, select, options });
-    return {
-        docsCount,
-        limit: options.limit,
-        pages,
-        currentPage: page !== "all" ? page : undefined,
-        result,
-    };
+    page,
+    limit
+})=>{
+    const skip = (page - 1) * limit;
+    const countMessage = await countDoc({model, filter})
+    const pages = Math.ceil(countMessage / limit)
+    
+    const docs = await find({
+        model,
+        filter,
+        options:{
+            ...options,
+            skip,
+            limit,
+        }
+    })
+    return {countMessage, pages ,  page , limit ,  docs}
 }
-
 export const create = async ({
     data,
     options,
